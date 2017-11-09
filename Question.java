@@ -3,6 +3,7 @@ import java.*;
 public class Question {
   String questionString;
   String[] options;
+  int numOfOptions;
   int answer;
 
   Question(String questionString,String[] options,int answer) {
@@ -18,6 +19,16 @@ public class Question {
     return options;
   }
   int getAnswer() {
-    return options;
+    return answer;
+  }
+  String optionStringify() {
+    String tmp = new String("");
+    for(int index=0; index<numOfOptions; index++) {
+      tmp = tmp + "|" + options[index];
+    }
+    return tmp;
+  }
+  String stringify() {
+    return (questionString + this.optionStringify() + "|" + answer);
   }
 }
