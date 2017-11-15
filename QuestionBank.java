@@ -25,21 +25,11 @@ class QuestionBank {
     qFile = new File(path + "/" + name);
     }
 
-    try{
-      try {
+    try {
         qFile.createNewFile();
       }
-      catch(SecurityException e) {
+    catch(SecurityException e) {
         //Must add
-      }
-      try {
-        sc = new Scanner(qFile);
-      }
-      catch(FileNotFoundException e){
-        //Must add
-      }
-
-      fw = new FileWriter(qFile.getAbsoluteFile());
     }
     catch(IOException e) {
       //Must add
@@ -56,19 +46,54 @@ class QuestionBank {
     /*
     * This will insert the incoming question in the database
     */
-    
-  }
-
-  void close() {
     try {
-      bw.close();
+      // fw = new FileWriter(qFile.getAbsoluteFile());
+       fw = new FileWriter(qFile,true);
     }
     catch(IOException e) {
-      //Must add
+      //Add Later
+      System.out.println("Opening FileWriter failed");
     }
+    try {
+      // fw.write(q.stringify(),0,q.stringify().length());
+      fw.write(q.stringify());
+      fw.write(System.getProperty("line.separator"));
+    }
+    catch(IOException e) {
+      //Add Later
+      System.out.println("write failed");
+    }
+    finally {
+      try {
+        fw.close();
+      }
+      catch (IOException e) {
+        System.out.println("Closing Failed");
+      }
+    }
+
   }
+
   public static void main(String[] args) {
     QuestionBank q1 = new QuestionBank("/home/chandrahas/mybin/Quiz-Test-Generator","physics");
     QuestionBank q2 = new QuestionBank("math");
+    String[] optionArray = new String[3];
+    optionArray[0] = "a";
+    optionArray[1] = "B";
+    optionArray[2] = "c";
+    Question q = new Question("Test1",optionArray,2);
+    q1.insert(q);
   }
 }
+
+
+
+
+// try {
+//   sc = new Scanner(qFile);
+// }
+// catch(FileNotFoundException e){
+//   //Must add
+// }
+//
+// fw = new FileWriter(qFile.getAbsoluteFile());
