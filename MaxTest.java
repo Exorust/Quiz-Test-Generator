@@ -2,6 +2,7 @@ import java.*;
 import java.io.*;
 import java.lang.*;
 import java.util.*;
+import java.nio.file.*;
 
 class MaxTest {
   static String getRandomizedString(int max) {
@@ -30,5 +31,27 @@ class MaxTest {
       Question q = new Question(getRandomizedString(100),optionArray,1);
       q1.insert(q);
     }
+    File newFile;     //physics new
+    File oldFile;     //physics old
+    try {
+      newFile = new File("physicsNew");
+      oldFile = new File("physics");
+      oldFile.createNewFile();
+      Files.copy(oldFile.toPath(),newFile.toPath());
+    }
+    catch (IOException e) {
+      System.out.println("Unable to copy the old physics into the new one");
+      System.out.println(e);
+    }
+    for (int index = 0; index<999995; index+=100) {
+      int optionLength = (int) ((rnd.nextFloat() * 3)+1);
+      String[] optionArray = new String[optionLength];
+      for (int innerIndex = 0;innerIndex < optionLength ; innerIndex++) {
+        optionArray[innerIndex] = getRandomizedString(5);
+      }
+      Question q = new Question(getRandomizedString(100),optionArray,1);
+      q1.modify(index,q);
+    }
+
   }
 }

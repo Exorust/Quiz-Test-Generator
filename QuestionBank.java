@@ -69,10 +69,11 @@ class QuestionBank {
           }
         }
       catch(SecurityException e) {
-          //Must add
+          System.out.println("Thats a restricted area.Choose another location");
+          System.out.println(e);
       }
       catch(IOException e) {
-        //Must add
+        System.out.println(e);
       }
       totalQuestions = 0;
     }
@@ -190,6 +191,7 @@ class QuestionBank {
           transfer = scOld.nextLine();
           fwTmp.write(transfer);
           fwTmp.write(System.getProperty("line.separator"));
+          System.out.println("Question Modified");
         }
       }
       catch (IOException e) {
@@ -213,44 +215,80 @@ class QuestionBank {
     }
   }
 
+
   void delete(int lineNumOfModification) {
-    File tmp = new File("tmp");
-   Scanner scOld = null;
-    try {
-      scOld = new Scanner(qFile);
-    }
-    catch (FileNotFoundException e) {
-      System.out.println(e);
-    }
-    try {
-      FileWriter fwTmp = new FileWriter(tmp);
-      String transfer = new String();
-      for (int index = 1; index < lineNumOfModification ; index++) {
-        transfer = scOld.nextLine();
-        fwTmp.write(transfer);
+    /* Follows same procedure as modify,
+    * will take each line and place into another file
+    */
+    if ( lineNumOfModification <= totalQuestions) {
+      File tmp = new File("tmp");
+      Scanner scOld = null;
+      try {
+        // Open the old file
+        scOld = new Scanner(qFile);
       }
-      transfer = scOld.nextLine();
-      String modifiedTransfer = new String();
-      String numString = new String();
-      while((transfer = scOld.nextLine()) != null) {
-        try {
-          numString = String.format("%06d", lineNumOfModification );
+      catch (FileNotFoundException e) {
+        System.out.println("Scanner opening for modify function failed");
+        System.out.println(e);
+      }
+
+      FileWriter fwTmp = null;
+      try {
+        //Open a new file tmp to copy stuff into it
+        fwTmp = new FileWriter(tmp);
+        String transfer = new String();                        //Holds each line which will be copied
+        for (int index = 1; index < lineNumOfModification ; index++) {
+          transfer = scOld.nextLine();
+          fwTmp.write(transfer);
+          fwTmp.write(System.getProperty("line.separator"));
         }
-        catch (IllegalFormatException e ){
-          System.out.println("Number of the question could not be formatted");
+        transfer = scOld.nextLine();
+        for (int index = lineNumOfModification; index < this.totalQuestions ; index++) {
+          String numString = String.format("%06d", new Integer(index));
+          transfer = scOld.nextLine();
+          fwTmp.write(numString+transfer.substring(6));
+          fwTmp.write(System.getProperty("line.separator"));
+          System.out.println("Deleted!");
+        }
+      }
+      catch (IOException e) {
+        System.out.println("File Writing failed");
+        System.out.println(e);
+      }
+      finally {
+        try {
+          fwTmp.close();
+        }
+        catch (IOException e) {
+          System.out.println("Could not close tmp");
+        }
+        scOld.close();
+      }
+      qFile.delete();
+      tmp.renameTo(qFile);
+      totalQuestions--;
+      try {
+        fw = new FileWriter(qMetaFile);
+        fw.write(Integer.toString(totalQuestions));
+        fw.write(System.getProperty("line.separator"));
+      }
+      catch (IOException e) {
+        System.out.println("Failed to read Number of Questions");
+        System.out.println(e);
+      }
+      finally{
+        try {
+          fw.close();
+        }
+        catch (IOException e) {
+          System.out.println("Closing Failed");
           System.out.println(e);
         }
-        modifiedTransfer = numString + transfer.substring(5);
-        fwTmp.write(modifiedTransfer);
-        lineNumOfModification++;
       }
     }
-    catch (IOException e) {
-      System.out.println(e);
+    else {
+      System.out.println("The question you wish to modify does not exist");
     }
-    qFile.delete();
-    tmp.renameTo(qFile);
-
   }
 
 
@@ -267,6 +305,8 @@ class QuestionBank {
     }
     Question qDiff = new Question("Test2",optionArray,2);
     q1.modify(3,qDiff);
+    q1.modify(5,qDiff);
+    q1.delete(4);
 
   }
 }

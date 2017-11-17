@@ -1,18 +1,16 @@
 # Quiz-Test-Generator
 
-A GUI quiz generator based in Java. Has ability to insert, delete and modify questions within the question bank.
+A GUI quiz generator based in Java. Each question bank can hold a maximum of 999,999 questions. Has ability to insert, delete and modify questions within the question bank.
 
-## Getting Started
+## Description
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+
+
+
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
+Java 1.8 JDK must be installed.
 
 ### Installing
 
@@ -21,9 +19,8 @@ A step by step series of examples that tell you have to get a development env ru
 Say what the step will be
 
 ```
-Give the example
+$ javac Question.java QuestionBank.java
 ```
-
 And repeat
 
 ```
@@ -36,8 +33,13 @@ End with an example of getting some data out of the system or using it for a lit
 
 Add additional notes about how to deploy this on a live system
 
+## Testing
+
+There is a testing class called Maxtest.java. It pushes the software to the limit.
+
 ## Built With
 
+The project uses Java 1.8
 
 ## Authors
 
@@ -50,4 +52,3 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 I'd like to thank my OOPS sir to give us this opportunity to make such a project.
-
