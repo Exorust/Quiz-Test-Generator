@@ -26,7 +26,7 @@ public class Question {
           //Take input
           this.questionString = questionString;
           this.options = options;
-          numOfOptions = options.length;
+          this.numOfOptions = options.length;
           this.answer = answer;
 
           //Set variables to fixed sizes.
@@ -53,6 +53,49 @@ public class Question {
     }
 
   }
+
+  Question(String fileString) {
+    String[] tokenizedArray = fileString.split("\\|");
+    int maxLength = tokenizedArray.length;
+    int answer = Integer.parseInt(tokenizedArray[7]);
+    String questionString = tokenizedArray[1];
+    int numOfOptions = Integer.parseInt(tokenizedArray[6]);
+    String[] options = Arrays.copyOfRange(tokenizedArray, 2, 5);
+
+    if ( numOfOptions <= 4) {
+      if (answer <= numOfOptions && answer > 0) {
+        if (questionString.length() <= 250){
+          //Take input
+          this.questionString = questionString;
+          this.options = options;
+          this.numOfOptions = numOfOptions;
+          this.answer = answer;
+
+          //Set variables to fixed sizes.
+          StringBuilder setSizeQuestionString = new StringBuilder(this.questionString);
+          setSizeQuestionString.setLength(250);
+          this.questionString = setSizeQuestionString.toString();
+
+          for (int index = 0; index < options.length; index++) {
+            StringBuilder setSizeopt = new StringBuilder(this.options[index]);
+            setSizeopt.setLength(20);
+            this.options[index] = setSizeopt.toString();
+          }
+        }
+        else {
+          System.out.println("Question is too long");
+        }
+      }
+      else {
+        System.out.println("Answer is out of the options");
+      }
+    }
+    else {
+      System.out.println("Max options is 4.");
+    }
+
+  }
+
   String getQuestionString() {
     return questionString;
   }
@@ -63,9 +106,6 @@ public class Question {
     return answer;
   }
 
-  // String fillWithBlanks(String modifiable,int length) {
-  //
-  // }
 
   String optionStringify() {
     String tmp = new String("");
@@ -84,6 +124,7 @@ public class Question {
   String stringify() {
     return (questionString.concat(this.optionStringify()) + "|" + numOfOptions +"|" + answer);
   }
+
   public static void main(String[] args) {
     String[] optionArray = new String[3];
     optionArray[0] = "a";
@@ -91,6 +132,7 @@ public class Question {
     optionArray[2] = "c";
     Question q = new Question("Test1",optionArray,2);
     System.out.println(q.stringify());
+    q = new Question("1|Hello|hi|woah|||2|1");
   }
 
 }

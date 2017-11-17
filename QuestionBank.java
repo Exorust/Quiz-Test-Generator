@@ -291,6 +291,73 @@ class QuestionBank {
     }
   }
 
+  Question getQuestion(int num) {
+    Question q = null;
+    if ( num <= totalQuestions) {
+      Scanner scOld = null;
+      try {
+        // Open the old file
+        scOld = new Scanner(qFile);
+      }
+      catch (FileNotFoundException e) {
+        System.out.println("Scanner opening for modify function failed");
+        System.out.println(e);
+      }
+      String transfer;
+      for (int index = 1; index <= num ; index++) {
+        transfer = scOld.nextLine();
+      }
+      q = new Question(transfer);
+    }
+    else {
+      System.out.println("The question you wish to get does not exist");
+    }
+    return q;
+  }
+
+  void generateQuiz(int maxNumOfQuestions, String name) {
+    File exportFile = new File(name);
+    File answersFile = new File(name+"answers");
+    if(!(exportFile.exists())){
+      exportFile.createNewFile();
+    }
+    if(!(answersFile.exists())){
+      answersFile.createNewFile();
+    }
+    FileWriter fwExport = null;
+    FileWriter fwAnswers = null;
+    try {
+      fwExport = new FileWriter(exportFile);
+      fwAnswers = new FileWriter(answersFile);
+      fwExport.write("            QUIZ");
+      fwAnswers.write("             ANSWERS");
+      fwExport.write(System.getProperty("line.separator"));
+      fwExport.write(System.getProperty("line.separator"));
+      fwAnswers.write(System.getProperty("line.separator"));
+      fwAnswers.write(System.getProperty("line.separator"));
+      Random rnd = new Random();
+      for (int index = 0;index < maxNumOfQuestions; index++) {
+          float tmp = rnd.nextFloat();
+          int tmpq = totalQuestions - 1;
+          int currentAccess = ((int)(tmp * tmpq)) +1;
+          Question q = getQuestion(currentAccess);
+          fw.Export(String.format("%d. %s",index,q.getQuestionString()));
+          fw.Export(String.format("%d. %d",index,q.getAnswer()));
+      }
+    }
+    catch (IOException e) {
+      System.out.println("Export File Writing failed");
+      System.out.println(e);
+    }
+    finally {
+      try {
+        fwTmp.close();
+      }
+      catch (IOException e) {
+        System.out.println("Could not close Export File");
+      }
+    }
+  }
 
   public static void main(String[] args) {
     QuestionBank q1 = new QuestionBank("/home/chandrahas/mybin/Quiz-Test-Generator","physics");
