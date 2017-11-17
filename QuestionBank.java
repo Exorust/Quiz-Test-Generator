@@ -80,6 +80,9 @@ class QuestionBank {
   }
 
   QuestionBank(String name) {
+    /*
+    * Use when path is not given
+    */
     this(null,name);
     this.path = qFile.getPath();
   }
@@ -89,6 +92,7 @@ class QuestionBank {
     * This will insert the incoming question in the database
     */
     if (totalQuestions < 999999) {
+      //Max size of questtionBank is 999999
       totalQuestions++;
       try {
         fw = new FileWriter(qMetaFile);
@@ -151,33 +155,62 @@ class QuestionBank {
   }
 
   void modify(int lineNumOfModification, Question q) {
-    File tmp = new File("tmp");
-    Scanner scOld = null;
-    try {
-      scOld = new Scanner(qFile);
-    }
-    catch (FileNotFoundException e) {
-      System.out.println(e);
-    }
-    try {
-      FileWriter fwTmp = new FileWriter(tmp);
-      String transfer = new String();
-      for (int index = 1; index < lineNumOfModification ; index++) {
-        transfer = scOld.nextLine();
-        fwTmp.write(transfer);
+    /*
+    *We will copy each question one by one to the new file,
+    *then we will delete the old file and add the new one in its place
+    */
+    if ( lineNumOfModification <= totalQuestions) {
+      File tmp = new File("tmp");
+      Scanner scOld = null;
+      try {
+        // Open the old file
+        scOld = new Scanner(qFile);
       }
-      transfer = scOld.nextLine();
-      fwTmp.write(q.stringify());
-      while((transfer = scOld.nextLine()) != null) {
-        fwTmp.write(transfer);
+      catch (FileNotFoundException e) {
+        System.out.println("Scanner opening for modify function failed");
+        System.out.println(e);
       }
-    }
-    catch (IOException e) {
-      System.out.println(e);
-    }
 
-    qFile.delete();
-    tmp.renameTo(qFile);
+      FileWriter fwTmp = null;
+      try {
+        //Open a new file tmp to copy stuff into it
+        fwTmp = new FileWriter(tmp);
+        String transfer = new String();                        //Holds each line which will be copied
+        for (int index = 1; index < lineNumOfModification ; index++) {
+          transfer = scOld.nextLine();
+          fwTmp.write(transfer);
+          fwTmp.write(System.getProperty("line.separator"));
+        }
+        transfer = scOld.nextLine();
+        String numString = String.format("%06d", new Integer(lineNumOfModification));
+        fwTmp.write(numString+"|");
+        fwTmp.write(q.stringify());
+        fwTmp.write(System.getProperty("line.separator"));
+        for (int index = lineNumOfModification; index < this.totalQuestions ; index++) {
+          transfer = scOld.nextLine();
+          fwTmp.write(transfer);
+          fwTmp.write(System.getProperty("line.separator"));
+        }
+      }
+      catch (IOException e) {
+        System.out.println("File Writing failed");
+        System.out.println(e);
+      }
+      finally {
+        try {
+          fwTmp.close();
+        }
+        catch (IOException e) {
+          System.out.println("Could not close tmp");
+        }
+        scOld.close();
+      }
+      qFile.delete();
+      tmp.renameTo(qFile);
+    }
+    else {
+      System.out.println("The question you wish to modify does not exist");
+    }
   }
 
   void delete(int lineNumOfModification) {
@@ -232,18 +265,8 @@ class QuestionBank {
     for (int index = 0; index<100; index++) {
           q1.insert(q);
     }
+    Question qDiff = new Question("Test2",optionArray,2);
+    q1.modify(3,qDiff);
 
   }
 }
-
-
-
-
-// try {
-//   sc = new Scanner(qFile);
-// }
-// catch(FileNotFoundException e){
-//   //Must add
-// }
-//
-// fw = new FileWriter(qFile.getAbsoluteFile());
