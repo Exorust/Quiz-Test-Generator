@@ -88,7 +88,7 @@ class QuestionBank {
     /*
     * This will insert the incoming question in the database
     */
-    if (totalQuestions < 99999) {
+    if (totalQuestions < 999999) {
       totalQuestions++;
       try {
         fw = new FileWriter(qMetaFile);
@@ -118,10 +118,18 @@ class QuestionBank {
         System.out.println("Opening FileWriter failed");
       }
       try {
-        // fw.write(q.stringify(),0,q.stringify().length());
-        fw.write(Integer.toString(totalQuestions)+"|");
-        fw.write(q.stringify());
-        fw.write(System.getProperty("line.separator"));
+        try {
+          String numString = String.format("%06d", new Integer(totalQuestions));
+          fw.write(numString+"|");
+          fw.write(q.stringify());
+          fw.write(System.getProperty("line.separator"));
+          System.out.println( numString + " Question inserted");
+        }
+        catch (IllegalFormatException e ){
+          System.out.println("Number of the question could not be formatted");
+          System.out.println(e);
+        }
+
       }
       catch(IOException e) {
         //Add Later
@@ -193,7 +201,7 @@ class QuestionBank {
       String numString = new String();
       while((transfer = scOld.nextLine()) != null) {
         try {
-          numString.format("%05d", lineNumOfModification );
+          numString = String.format("%06d", lineNumOfModification );
         }
         catch (IllegalFormatException e ){
           System.out.println("Number of the question could not be formatted");
