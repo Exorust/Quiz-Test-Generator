@@ -52,8 +52,6 @@ public class Question {
       System.out.println("Max options is 4.");
     }
 
-
-
   }
   String getQuestionString() {
     return questionString;

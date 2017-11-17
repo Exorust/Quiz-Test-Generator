@@ -2,9 +2,8 @@ import java.*;
 import java.io.*;
 import java.util.*;
 
-// To fix: Add the ability to count number of questions. Put a count at the start of the file
 
-
+// Max 99,999 questions. To change edit modifiedTransfer = num + transfer.substring(5);
 
 
 
@@ -89,64 +88,129 @@ class QuestionBank {
     /*
     * This will insert the incoming question in the database
     */
-    System.out.println(this.totalQuestions);
-
-    totalQuestions++;
-    try {
-      fw = new FileWriter(qMetaFile);
-      fw.write(Integer.toString(totalQuestions));
-      fw.write(System.getProperty("line.separator"));
-    }
-    catch (IOException e) {
-      System.out.println("Failed to read Number of Questions");
-      System.out.println(e);
-    }
-    finally{
+    if (totalQuestions < 99999) {
+      totalQuestions++;
       try {
-        fw.close();
+        fw = new FileWriter(qMetaFile);
+        fw.write(Integer.toString(totalQuestions));
+        fw.write(System.getProperty("line.separator"));
       }
       catch (IOException e) {
-        System.out.println("Closing Failed");
+        System.out.println("Failed to read Number of Questions");
         System.out.println(e);
       }
-    }
+      finally{
+        try {
+          fw.close();
+        }
+        catch (IOException e) {
+          System.out.println("Closing Failed");
+          System.out.println(e);
+        }
+      }
 
-    try {
-      // fw = new FileWriter(qFile.getAbsoluteFile());
-       fw = new FileWriter(qFile,true);
-    }
-    catch(IOException e) {
-      //Add Later
-      System.out.println("Opening FileWriter failed");
-    }
-    try {
-      // fw.write(q.stringify(),0,q.stringify().length());
-      fw.write(Integer.toString(totalQuestions)+"|");
-      fw.write(q.stringify());
-      fw.write(System.getProperty("line.separator"));
-    }
-    catch(IOException e) {
-      //Add Later
-      System.out.println("write failed");
-    }
-    finally {
       try {
-        fw.close();
+        // fw = new FileWriter(qFile.getAbsoluteFile());
+         fw = new FileWriter(qFile,true);
       }
-      catch (IOException e) {
-        System.out.println("Closing Failed");
+      catch(IOException e) {
+        //Add Later
+        System.out.println("Opening FileWriter failed");
+      }
+      try {
+        // fw.write(q.stringify(),0,q.stringify().length());
+        fw.write(Integer.toString(totalQuestions)+"|");
+        fw.write(q.stringify());
+        fw.write(System.getProperty("line.separator"));
+      }
+      catch(IOException e) {
+        //Add Later
+        System.out.println("write failed");
+      }
+      finally {
+        try {
+          fw.close();
+        }
+        catch (IOException e) {
+          System.out.println("Closing Failed");
+        }
       }
     }
-  }
-
-  void modify(int num) {
-
-  }
-
-  void delete(int num) {
+    else {
+      System.out.println("Max Capacity Reached");
+    }
 
   }
 
+  void modify(int lineNumOfModification, Question q) {
+    File tmp = new File("tmp");
+    Scanner scOld = null;
+    try {
+      scOld = new Scanner(qFile);
+    }
+    catch (FileNotFoundException e) {
+      System.out.println(e);
+    }
+    try {
+      FileWriter fwTmp = new FileWriter(tmp);
+      String transfer = new String();
+      for (int index = 1; index < lineNumOfModification ; index++) {
+        transfer = scOld.nextLine();
+        fwTmp.write(transfer);
+      }
+      transfer = scOld.nextLine();
+      fwTmp.write(q.stringify());
+      while((transfer = scOld.nextLine()) != null) {
+        fwTmp.write(transfer);
+      }
+    }
+    catch (IOException e) {
+      System.out.println(e);
+    }
+
+    qFile.delete();
+    tmp.renameTo(qFile);
+  }
+
+  void delete(int lineNumOfModification) {
+    File tmp = new File("tmp");
+   Scanner scOld = null;
+    try {
+      scOld = new Scanner(qFile);
+    }
+    catch (FileNotFoundException e) {
+      System.out.println(e);
+    }
+    try {
+      FileWriter fwTmp = new FileWriter(tmp);
+      String transfer = new String();
+      for (int index = 1; index < lineNumOfModification ; index++) {
+        transfer = scOld.nextLine();
+        fwTmp.write(transfer);
+      }
+      transfer = scOld.nextLine();
+      String modifiedTransfer = new String();
+      String numString = new String();
+      while((transfer = scOld.nextLine()) != null) {
+        try {
+          numString.format("%05d", lineNumOfModification );
+        }
+        catch (IllegalFormatException e ){
+          System.out.println("Number of the question could not be formatted");
+          System.out.println(e);
+        }
+        modifiedTransfer = numString + transfer.substring(5);
+        fwTmp.write(modifiedTransfer);
+        lineNumOfModification++;
+      }
+    }
+    catch (IOException e) {
+      System.out.println(e);
+    }
+    qFile.delete();
+    tmp.renameTo(qFile);
+
+  }
 
 
   public static void main(String[] args) {
@@ -157,7 +221,10 @@ class QuestionBank {
     optionArray[1] = "B";
     optionArray[2] = "c";
     Question q = new Question("Test1",optionArray,2);
-    q1.insert(q);
+    for (int index = 0; index<100; index++) {
+          q1.insert(q);
+    }
+
   }
 }
 
