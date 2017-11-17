@@ -43,7 +43,7 @@ class MaxTest {
       System.out.println("Unable to copy the old physics into the new one");
       System.out.println(e);
     }
-    for (int index = 0; index<999995; index+=100) {
+    for (int index = 0; index<99999; index+=100) {
       int optionLength = (int) ((rnd.nextFloat() * 3)+1);
       String[] optionArray = new String[optionLength];
       for (int innerIndex = 0;innerIndex < optionLength ; innerIndex++) {

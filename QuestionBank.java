@@ -191,7 +191,7 @@ class QuestionBank {
           transfer = scOld.nextLine();
           fwTmp.write(transfer);
           fwTmp.write(System.getProperty("line.separator"));
-          System.out.println("Question Modified");
+          System.out.println(lineNumOfModification + " :Question Modified");
         }
       }
       catch (IOException e) {
@@ -248,7 +248,7 @@ class QuestionBank {
           transfer = scOld.nextLine();
           fwTmp.write(numString+transfer.substring(6));
           fwTmp.write(System.getProperty("line.separator"));
-          System.out.println("Deleted!");
+          System.out.println(lineNumOfModification + " :Question Deleted!");
         }
       }
       catch (IOException e) {
