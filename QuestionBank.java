@@ -20,6 +20,7 @@ class QuestionBank {
   FileWriter fw;
 
 
+
   QuestionBank(String path,String name) {
     this.name = name;
     this.path = path;
@@ -86,6 +87,10 @@ class QuestionBank {
     */
     this(null,name);
     this.path = qFile.getPath();
+  }
+
+  int getTotalQuestions() {
+    return totalQuestions;
   }
 
   void insert(Question q) {
@@ -293,17 +298,17 @@ class QuestionBank {
 
   Question getQuestion(int num) {
     Question q = null;
+    String transfer = null;
     if ( num <= totalQuestions) {
       Scanner scOld = null;
       try {
-        // Open the old file
+        // Open the file
         scOld = new Scanner(qFile);
       }
       catch (FileNotFoundException e) {
         System.out.println("Scanner opening for modify function failed");
         System.out.println(e);
       }
-      String transfer;
       for (int index = 1; index <= num ; index++) {
         transfer = scOld.nextLine();
       }
@@ -316,33 +321,77 @@ class QuestionBank {
   }
 
   void generateQuiz(int maxNumOfQuestions, String name) {
-    File exportFile = new File(name);
-    File answersFile = new File(name+"answers");
-    if(!(exportFile.exists())){
-      exportFile.createNewFile();
-    }
-    if(!(answersFile.exists())){
-      answersFile.createNewFile();
-    }
-    FileWriter fwExport = null;
-    FileWriter fwAnswers = null;
+    File exportQuestionFile = new File(name+"Export"+"Question");
+    File exportAnswerFile = new File(name+"Export"+"Answer");
+    File questionFile = new File(name+"Question");
+    File answerFile = new File(name+"Answer");
     try {
-      fwExport = new FileWriter(exportFile);
-      fwAnswers = new FileWriter(answersFile);
-      fwExport.write("            QUIZ");
-      fwAnswers.write("             ANSWERS");
-      fwExport.write(System.getProperty("line.separator"));
-      fwExport.write(System.getProperty("line.separator"));
-      fwAnswers.write(System.getProperty("line.separator"));
-      fwAnswers.write(System.getProperty("line.separator"));
+      if(!(exportQuestionFile.exists())){
+        exportQuestionFile.createNewFile();
+      }
+      if(!(exportAnswerFile.exists())){
+        exportAnswerFile.createNewFile();
+      }
+      if(!(questionFile.exists())){
+        questionFile.createNewFile();
+      }
+      if(!(answerFile.exists())){
+        answerFile.createNewFile();
+      }
+    }
+    catch (IOException e) {
+      System.out.println(e);
+    }
+
+    FileWriter fwQuestionExport = null;
+    FileWriter fwAnswerExport = null;
+    FileWriter fwQuestion = null;
+    FileWriter fwAnswer = null;
+    try {
+      fwQuestionExport = new FileWriter(exportQuestionFile);
+      fwAnswerExport = new FileWriter(exportAnswerFile);
+      fwQuestion = new FileWriter(questionFile,false);
+      fwAnswer = new FileWriter(answerFile,false);
+
+      fwQuestionExport.write("      QUIZ");
+      fwAnswerExport.write("      ANSWERS");
+      fwQuestionExport.write(System.getProperty("line.separator"));
+      fwQuestionExport.write(System.getProperty("line.separator"));
+      fwAnswerExport.write(System.getProperty("line.separator"));
+      fwAnswerExport.write(System.getProperty("line.separator"));
+      fwQuestion.write("hello");
       Random rnd = new Random();
-      for (int index = 0;index < maxNumOfQuestions; index++) {
+      for (int index = 1;index <= maxNumOfQuestions; index++) {
           float tmp = rnd.nextFloat();
           int tmpq = totalQuestions - 1;
           int currentAccess = ((int)(tmp * tmpq)) +1;
           Question q = getQuestion(currentAccess);
-          fw.Export(String.format("%d. %s",index,q.getQuestionString()));
-          fw.Export(String.format("%d. %d",index,q.getAnswer()));
+          if(q.getNumOfOptions() == 1) {
+            fwQuestion.write(String.format("%06d|%s%s",new Integer(index+1),q.getQuestionString(),q.optionStringify()));
+            fwQuestion.write(System.getProperty("line.separator"));
+            fwQuestionExport.write(String.format("%d. %s",index,q.getQuestionString()));
+            fwQuestionExport.write(System.getProperty("line.separator"));
+            fwAnswerExport.write(String.format("%d. %s",index,q.getStringAnswer()));
+            fwAnswerExport.write(System.getProperty("line.separator"));
+            fwAnswer.write(String.format("%d. %s",index,q.getStringAnswer()));
+            fwAnswer.write(System.getProperty("line.separator"));
+          }
+          else {
+            fwQuestion.write(String.format("%06d|%s%s",new Integer(index+1),q.getQuestionString(),q.optionStringify()));
+            fwQuestion.write(System.getProperty("line.separator"));
+            fwQuestionExport.write(String.format("%d. %s",index,q.getQuestionString()));
+            fwQuestionExport.write(System.getProperty("line.separator"));
+            fwAnswerExport.write(String.format("%d. %s",index,q.getStringAnswer()));
+            fwAnswerExport.write(System.getProperty("line.separator"));
+            fwAnswer.write(String.format("%d. %s",index,q.getStringAnswer()));
+            fwAnswer.write(System.getProperty("line.separator"));
+            String[] listOptions = new String[]{"a)","b)","c)","d)"};
+            String[] tmpOptions = q.getOptions();
+            for (int innerIndex =0;innerIndex< q.getNumOfOptions() ;innerIndex++ ) {
+              fwQuestionExport.write(String.format("%s %s",listOptions[innerIndex],tmpOptions[innerIndex]));
+              fwQuestionExport.write(System.getProperty("line.separator"));
+            }
+          }
       }
     }
     catch (IOException e) {
@@ -351,7 +400,8 @@ class QuestionBank {
     }
     finally {
       try {
-        fwTmp.close();
+        fwQuestionExport.close();
+        fwAnswerExport.close();
       }
       catch (IOException e) {
         System.out.println("Could not close Export File");
@@ -374,6 +424,7 @@ class QuestionBank {
     q1.modify(3,qDiff);
     q1.modify(5,qDiff);
     q1.delete(4);
+    q1.generateQuiz(10,"hello");
 
   }
 }

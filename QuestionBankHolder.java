@@ -10,16 +10,24 @@ class QuestionBankHolder {
   *Uses a hashMap for high performance
   */
   Map<String,QuestionBank> hm;
+  int numOfQuestionBanks;
+
+  int getNumOfQuestionBanks() {
+    return numOfQuestionBanks;
+  }
 
   QuestionBankHolder() {
     hm = new HashMap<String,QuestionBank>();
+    numOfQuestionBanks =0;
   }
 
   void insertQuestionBank(String path,String name) {
     hm.put(name, new QuestionBank(path,name));
+    numOfQuestionBanks++;
   }
   void insertQuestionBank(String name) {
     hm.put(name, new QuestionBank(name));
+    numOfQuestionBanks++;
   }
   void insertQuestion(String name,Question q) {
     if(hm.containsKey(name)) {

@@ -99,11 +99,18 @@ public class Question {
   String getQuestionString() {
     return questionString;
   }
+  int getNumOfOptions() {
+    return numOfOptions;
+  }
   String[] getOptions() {
     return options;
   }
   int getAnswer() {
     return answer;
+  }
+
+  String getStringAnswer() {
+    return options[answer];
   }
 
 
