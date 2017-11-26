@@ -110,10 +110,10 @@ class MainSwingControl {
   }
 
   void jtpRefresh() {
+    jtp.removeAll();
     Set<Map.Entry<String,QuestionBank>> set = hm.entrySet();
     for (Map.Entry<String,QuestionBank> me : set) {
-      System.out.println("x//");
-      jtp.addTab(me.getKey(),new XPanel(me.getValue()));
+      jtp.addTab(me.getKey(),new XPanel(me.getValue(),this));
     }
     jFrameMain.add(jtp);
   }
@@ -159,7 +159,8 @@ class MainSwingControl {
 }
 
 class XPanel extends JPanel {
-  XPanel(QuestionBank qb) {
+  XPanel(QuestionBank qb,MainSwingControl msc) {
+    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     JButton generateButton = new JButton("Generate");
     JButton modifyButton = new JButton("Modify");
     JButton insertButton = new JButton("Insert");
@@ -179,14 +180,137 @@ class XPanel extends JPanel {
     table.setEnabled(false);
     JScrollPane jsp = new JScrollPane(table);
     add(jsp);
-    add(generateButton);
-    add(modifyButton);
     add(insertButton);
+    add(modifyButton);
     add(deleteButton);
+    add(generateButton);
 
+    //Add action listener to each button
+    insertButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        InsertDialog id = new InsertDialog(msc,qb,"Question Insertion",true);
+        id.setSize(200,200);
+        id.setVisible(true);
+        msc.jtpRefresh();
+      }
+    });
   }
 }
 
-class GenerateDialog extends JDialog {
+class InsertDialog extends JDialog {
+  InsertDialog (MainSwingControl msc,QuestionBank qb,String name,boolean modality) {
+    super(msc.jFrameMain,name,modality);
+    JPanel pnl = new JPanel();
+    pnl.setLayout(new BoxLayout(pnl, BoxLayout.Y_AXIS));
+    Label l = new Label("Chose one type to insert.");
+    Button b1 = new Button("True/False");
+    Button b2 = new Button("MCQ");
+    Button b3 = new Button("Fill in the Blank");
+    b1.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        TrueDialog td = new TrueDialog(msc,qb,"True False",true);
+        td.setSize(200,200);
+        td.setVisible(true);
+        dispose();
+      }
+    });
+    add(pnl);
+    pnl.add(l);
+    pnl.add(b1);
+    pnl.add(b2);
+    pnl.add(b3);
+  }
+}
+
+class TrueDialog extends JDialog {
+  TrueDialog(MainSwingControl msc,QuestionBank qb,String name,boolean modality) {
+    super(msc.jFrameMain,name,modality);
+    JPanel pnl = new JPanel();
+    pnl.setLayout(new BoxLayout(pnl, BoxLayout.Y_AXIS));
+    JLabel ques = new JLabel("Question");
+    JTextField quesJTF = new JTextField(25);
+    JLabel ans = new JLabel("Answer either T/F");
+    JTextField ansJTF = new JTextField(1);
+    JButton jb = new JButton("Finish");
+    pnl.add(ques);
+    pnl.add(quesJTF);
+    pnl.add(ans);
+    pnl.add(ansJTF);
+    pnl.add(jb);
+    add(pnl);
+    jb.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        if((ansJTF.getText().equals("T") || ansJTF.getText().equals("F")) && quesJTF.getText().length() >0 ) {
+          int tmp = 1;
+          if(ansJTF.getText().equals("F")) {
+            tmp = 2;
+          }
+          qb.insert(new Question(quesJTF.getText(),new String[]{"T","F"},tmp));
+          dispose();
+        }
+      }
+    });
+  }
+
+
+}
+
+class MCQDialog extends JDialog {
+  MCQDialog(MainSwingControl msc,QuestionBank qb,String name,boolean modality) {
+    super(msc.jFrameMain,name,modality);
+    JPanel pnl = new JPanel();
+    pnl.setLayout(new BoxLayout(pnl, BoxLayout.Y_AXIS));
+    JLabel ques = new JLabel("Question");
+    JTextField quesJTF = new JTextField(25);
+
+    JLabel[] options = new JLabel[4];
+    JLabel option1 = new JLabel("Option1:");
+    JTextField option1JTF = new JTextField(10);
+    JLabel option2 = new JLabel("Option2:");
+    JTextField option2JTF = new JTextField(10);
+    JLabel option3 = new JLabel("Option3:");
+    JTextField option3JTF = new JTextField(10);
+    JLabel optio4n = new JLabel("Option4:");
+    JTextField option4JTF = new JTextField(10);
+    JLabel ans = new JLabel("Answer number??");
+    JTextField ansJTF = new JTextField(10);
+    JButton jb = new JButton("Finish");
+    pnl.add(ques);
+    pnl.add(quesJTF);
+    pnl.add(ans);
+    pnl.add(ansJTF);
+    pnl.add(jb);
+    add(pnl);
+    jb.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        if(quesJTF.getText().length() >0 && option1JTF.getText().length() >0 ) {
+          int length =0;
+          String[] optString;
+          if(option1JTF.getText().length() >0){
+            length++;
+            optString = new String[1];
+          }
+          if(option2JTF.getText().length() >0){
+            length++;
+            optString = new String[2];
+          }
+          if(option3JTF.getText().length() >0){
+            length++;
+            optString = new String[3];
+          }
+          if(option4JTF.getText().length() >0){
+            length++;
+            optString = new String[4];
+          }
+          for (int innerIndex = 0;innerIndex<length ;innerIndex++ ) {
+            optString[innerIndex] =
+          }
+          qb.insert(new Question(quesJTF.getText(),optString,tmp));
+          dispose();
+        }
+      }
+    });
+  }
+
 
 }
