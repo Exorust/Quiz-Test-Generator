@@ -36,8 +36,7 @@ class MainSwingControl {
     jPanelLogin.add(jUser);
     jPanelLogin.add(jUserEnter);
     jPanelLogin.add(jPassword);
-    jPanelLogin.add(jPassEnter);
-    jPanelLogin.add(jEnterButton);
+    jPanelLogin.add(jPassEnter); jPanelLogin.add(jEnterButton);
     jEnterButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
         if(user.equals(jUserEnter.getText()) && password.equals(jPassEnter.getText())){
@@ -189,7 +188,7 @@ class XPanel extends JPanel {
     insertButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
         InsertDialog id = new InsertDialog(msc,qb,"Question Insertion",true);
-        id.setSize(200,200);
+        id.setSize(300,300);
         id.setVisible(true);
         msc.jtpRefresh();
       }
@@ -197,7 +196,7 @@ class XPanel extends JPanel {
     modifyButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
         ModifyDialog md = new ModifyDialog(msc,qb,"Question Modification",true);
-        md.setSize(200,200);
+        md.setSize(300,300);
         md.setVisible(true);
         msc.jtpRefresh();
       }
@@ -205,9 +204,117 @@ class XPanel extends JPanel {
     deleteButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
         DeleteDialog dd = new DeleteDialog(msc,qb,"Question Deletion",true);
-        dd.setSize(200,200);
+        dd.setSize(300,300);
         dd.setVisible(true);
         msc.jtpRefresh();
+      }
+    });
+    generateButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        GenerateDialog gd = new GenerateDialog(msc,qb,"Question Deletion",true);
+        gd.setSize(300,300);
+        gd.setVisible(true);
+        msc.jtpRefresh();
+      }
+    });
+  }
+}
+
+class GenerateDialog extends JDialog {
+  GenerateDialog (MainSwingControl msc,QuestionBank qb,String name,boolean modality) {
+    super(msc.jFrameMain,name,modality);
+    JPanel pnl = new JPanel();
+    pnl.setLayout(new BoxLayout(pnl, BoxLayout.Y_AXIS));
+    JLabel quesNum = new JLabel("Number of Questions to generate:");
+    JTextField quesNumJTF = new JTextField(2);
+    JLabel quesName = new JLabel("File Name:");
+    JTextField quesNameJTF = new JTextField(10);
+    JButton jb = new JButton("Enter");
+    pnl.add(quesNum);
+    pnl.add(quesNumJTF);
+    pnl.add(quesName);
+    pnl.add(quesNameJTF);
+    pnl.add(jb);
+    add(pnl);
+    jb.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        if(quesNumJTF.getText().length() >0) {
+          int tmp = Integer.parseInt(quesNumJTF.getText());
+          qb.generateQuiz(tmp,quesNameJTF.getText());
+          DisplayDialog dd = new DisplayDialog(msc,qb,tmp,quesNameJTF.getText(),"Display Generated Quiz",true);
+          dd.setSize(400,400);
+          dd.setVisible(true);
+          msc.jtpRefresh();
+          dispose();
+        }
+      }
+    });
+  }
+}
+
+class DisplayDialog extends JDialog {
+  DisplayDialog (MainSwingControl msc,QuestionBank qb,int numOfQuestions,String name,String displayName,boolean modality) {
+    super(msc.jFrameMain,displayName,modality);
+    JPanel pnl = new JPanel();
+    pnl.setLayout(new BoxLayout(pnl, BoxLayout.Y_AXIS));
+    //Making an array for JTabbedPane
+    File questionFile = new File(name+"Question");
+    File answerFile = new File(name+"Answer");
+    String[][] arrQues = new String[numOfQuestions][6];
+    String[][] arrAns = new String[numOfQuestions][2];
+    Scanner frQuestion = null;
+    Scanner frAnswer = null;
+    try {
+      frQuestion = new Scanner(questionFile);
+      frAnswer = new Scanner(answerFile);
+      String transfer;
+      for (int index = 0;index<numOfQuestions ;index++ ) {
+        transfer = frQuestion.nextLine();
+        String[] temp = transfer.split("\\|");
+        for (int innerIndex = 0;innerIndex<6 ;innerIndex++ ) {
+          arrQues[index][innerIndex] = temp[innerIndex];
+        }
+        transfer = frAnswer.nextLine();
+        temp = transfer.split("\\. ");
+        for (int innerIndex = 0;innerIndex<2 ;innerIndex++ ) {
+          arrAns[index][innerIndex] = temp[innerIndex];
+        }
+      }
+    }
+    catch (IOException e) {
+      System.out.println("Generated File reading failed");
+      System.out.println(e);
+    }
+    finally {
+      try {
+        frQuestion.close();
+        frAnswer.close();
+      }
+      catch (Exception e) {
+        System.out.println("Could not close the generated File");
+      }
+    }
+    //Adding JTabbedPane
+    JTabbedPane jtp = new JTabbedPane();
+    JPanel p1 = new JPanel();
+    JPanel p2 = new JPanel();
+    String[] colheadsQues = {"Num","Question","Option1","Option2","Option3","Option4"};
+    String[] colheadsAns = {"Num","Answer"};
+    JTable t1 = new JTable(arrQues,colheadsQues);
+    JTable t2 = new JTable(arrAns,colheadsAns);
+    p1.add(t1);
+    p2.add(t2);
+    jtp.addTab("Questions",p1);
+    jtp.addTab("Answers",p2);
+
+
+    JButton jb = new JButton("Exit");
+    pnl.add(jtp);
+    pnl.add(jb);
+    add(pnl);
+    jb.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        dispose();
       }
     });
   }
@@ -307,7 +414,7 @@ class InsertDialog extends JDialog {
     b1.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
         TrueDialog td = new TrueDialog(msc,qb,"True False",true);
-        td.setSize(200,200);
+        td.setSize(300,300);
         td.setVisible(true);
         dispose();
       }
@@ -315,7 +422,7 @@ class InsertDialog extends JDialog {
     b2.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
         MCQDialog mcqd = new MCQDialog(msc,qb,"True False",true);
-        mcqd.setSize(200,200);
+        mcqd.setSize(300,300);
         mcqd.setVisible(true);
         dispose();
       }
@@ -323,7 +430,7 @@ class InsertDialog extends JDialog {
     b3.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
         FillInTheBlankDialog fd = new FillInTheBlankDialog(msc,qb,"True False",true);
-        fd.setSize(200,200);
+        fd.setSize(300,300);
         fd.setVisible(true);
         dispose();
       }
