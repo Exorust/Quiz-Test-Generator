@@ -52,31 +52,38 @@ class MainSwingControl {
     jFrameLogin.setVisible(true);
 
 
-    jFrameMain.setSize(575, 400);
+    jFrameMain.setSize(700,575);
     jFrameMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     // JTabbedPane questionBankTabs = new JTabbedPane();
 
     /*Creating the MenuBar with:
     *File : New Question Bank,Open Question Bank,Exit
     *Edit : Delete Question Bank
-    *Generate : Generate
     */
 
-    JMenuBar jmBar = new JMenuBar();
-    JMenu jmFile = new JMenu("File");
-    JMenu jmEdit = new JMenu("Edit");
-    JMenu jmGenerate = new JMenu("Generate");
-    JMenuItem nqb= new JMenuItem("New Question Bank");
-    JMenuItem oqb= new JMenuItem("Open Question Bank");
-    JMenuItem exit= new JMenuItem("Exit");
-    JMenuItem deleteqb= new JMenuItem("Delete Question Bank");
-    JMenuItem generatequiz= new JMenuItem("Generate");
-    jFrameMain.add(jmBar);
-    jmFile.add(nqb);
-    jmFile.add(oqb);
-    jmFile.add(exit);
-    jmEdit.add(deleteqb);
-    jmGenerate.add(generatequiz);
+    // JMenuBar jmb = new JMenuBar();
+    // JMenu jmFile = new JMenu("File");
+    // JMenuItem jmNew = new JMenuItem("New Question Bank");
+    // JMenuItem jmOpen = new JMenuItem("Open Question Bank");
+    // JMenuItem jmExit = new JMenuItem("Exit");
+    // jmFile.add(jmNew);
+    // jmFile.add(jmOpen);
+    // jmFile.add(jmExit);
+    // jmb.add(jmFile);
+    // JMenu jmEdit = new JMenu("Edit");
+    // JMenuItem jmDelete = new JMenuItem("Delete");
+    // jmEdit.add(jmDelete);
+    // jmb.add(jmEdit);
+    // jFrameMain.setJMenuBar(jmb);
+    //
+    // jmNew.addActionListener(new ActionListener() {
+    //   public void actionPerformed(ActionEvent ae) {
+    //     NewDialog nd = new NewDialog(this,"New Dialog",true);
+    //     nd.setSize(300,300);
+    //     nd.setVisible(true);
+    //     jtpRefresh();
+    //   }
+    // });
 
 
     //TESTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -561,3 +568,30 @@ class FillInTheBlankDialog extends JDialog {
 
 
 }
+
+// class NewDialog extends JDialog {
+//   NewDialog(MainSwingControl msc,String name,boolean modality) {
+//     super(msc.jFrameMain,name,modality);
+//     JPanel pnl = new JPanel();
+//     pnl.setLayout(new BoxLayout(pnl, BoxLayout.Y_AXIS));
+//     JLabel ques = new JLabel("Name of new Question Bank");
+//     JTextField quesJTF = new JTextField(25);
+//     JButton jb = new JButton("Finish");
+//     pnl.add(ques);
+//     pnl.add(quesJTF);
+//     pnl.add(jb);
+//     add(pnl);
+//     jb.addActionListener( new ActionListener() {
+//       public void actionPerformed(ActionEvent ae) {
+//         if(ansJTF.getText().length() >0 && quesJTF.getText().length() >0 ) {
+//           String[] temp = new String[1];
+//           temp[0] = ansJTF.getText();
+//           qb.insert(new Question(quesJTF.getText(),temp,1));
+//           dispose();
+//         }
+//       }
+//     });
+//   }
+//
+//
+// }
