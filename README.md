@@ -22,9 +22,6 @@ Say what the step will be
 $ javac Question.java QuestionBank.java QuestionBankHolder.java
 ```
 
-
-End with an example of getting some data out of the system or using it for a little demo
-
 ## Deployment
 
 Now to run the program:
